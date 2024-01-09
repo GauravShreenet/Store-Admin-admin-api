@@ -21,3 +21,7 @@ const SessionSchema =  mongoose.model("Session", userSchema)
 export const createNewSession = obj => {
     return SessionSchema(obj).save();
 }
+
+export const deleteSession = (filter) => {
+    return SessionSchema.findOneAndDelete(filter)
+}

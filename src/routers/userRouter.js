@@ -1,10 +1,11 @@
 import express from 'express';
-import { insertUser } from '../modules/user/userModule.js';
+import { insertUser, updateUser } from '../modules/user/userModule.js';
 import { hashPassword } from '../utils/bcrypt.js';
 import { newAdminValidation } from '../middlewares/joiValidation.js';
 import { responder } from '../middlewares/response.js';
 import {v4 as uuidv4} from 'uuid';
-import { createNewSession } from '../modules/session/SessionSchema.js';
+import { createNewSession, deleteSession } from '../modules/session/SessionSchema.js';
+import { sendEmailVerificaitonLinkEmail, sendEmailVerifiedNotifaction } from '../utils/nodemailer.js';
 
 let router = express.Router();
 
@@ -22,13 +23,18 @@ router.post("/", newAdminValidation, async (req, res, next) => {
             if(token?._id){
                 const url = `${process.env.CLIENT_ROOT_DOMAIN}/verify-email?email=${user.email}&c=${c}`
                 console.log(url)
+                sendEmailVerificaitonLinkEmail({
+                    email:user.email,
+                    url,
+                    fName: user.fName,
+                })
             }
             
         }
 
         user?._id ?
-        responder.SUCCESS({res,message: "Check your inbox/span to verify your email"}) :
-        responder.ERROR({res, errorCode: 200, message: "Unable to create new user, try again later"})
+        responder.SUCCESS({res, status: 'success',message: "Check your inbox/span to verify your email"}) :
+        responder.ERROR({res, status: 'error', errorCode: 200, message: "Unable to create new user, try again later"})
     } catch (error) {
         if(error.message.includes("E11000 duplicate key error")){
             error.errorCode = 200
@@ -37,5 +43,32 @@ router.post("/", newAdminValidation, async (req, res, next) => {
         next(error)
     }
 });
+
+//verify use email
+router.post("/verify-email", async (req, res, next)=>{
+    try {
+        const { associate, token } = req.body
+        if(associate && token){
+            // delete from session
+            const session = await deleteSession({ token, associate })
+            //if success, then update user status to active
+            if(session?._id){
+                //update user table
+                const user = await updateUser({email: associate}, {status: 'active'})
+                
+
+                if(user?._id){
+                    //send email notifaction
+                    sendEmailVerifiedNotifaction({ email: associate, fName: user.fName })
+                    return responder.SUCCESS({res, message: "You email is verified. You may sign in now"})
+                }
+                
+            }
+        }
+        responder.ERROR({res, message: "Invalid or Expired Link"})
+    } catch (error) {
+        next(error)
+    }
+})
 
 export default router
