@@ -1,0 +1,12 @@
+@rootUrl = http://localhost:8000/api/v1
+@userApi = {{rootUrl}}/users
+
+# ======== user API
+###login user
+POST {{userApi}}/sign-in
+Content-Type: application/json
+
+{
+    "email": "b@b.com",
+    "password": "11QQqq"
+}

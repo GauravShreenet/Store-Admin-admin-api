@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    refreshJWT: {
+        type: String,
+        default: "",
+    },
 },
     {
         timestamps: true
