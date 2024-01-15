@@ -17,6 +17,10 @@ export const createAccessJWT = async(email) => {
     return accessJWT;
 }
 
+export const verifyAccessJWT = (accessJWT) => {
+    return jwt.verify(accessJWT, process.env.ACCESSJWT_SECRET)
+}
+
 
 //create refreshJWT
 export const createRefreshJWT = async(email) => {
@@ -31,6 +35,10 @@ export const createRefreshJWT = async(email) => {
     })
 
     return refreshJWT
+}
+
+export const verifyRefreshJWT = async(refreshJWT) => {
+    return jwt.verify(refreshJWT, process.env.REFRESHJWT_SECRET)
 }
 
 export const getJwts = async(email) => {

@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { createNewSession, deleteSession } from '../modules/session/SessionSchema.js';
 import { sendEmailVerificaitonLinkEmail, sendEmailVerifiedNotifaction } from '../utils/nodemailer.js';
 import { getJwts } from '../utils/jwt.js';
+import { adminAuth } from '../middlewares/authMiddleWare.js';
 
 let router = express.Router();
 
@@ -101,6 +102,14 @@ router.post("/sign-in", async (req, res, next) => {
 
         }
         responder.ERROR({ res, message: "Invalid Login" })
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.get("/", adminAuth, (req, res, next)=>{
+    try {
+        responder.SUCCESS({res, message: "Here is the user data", user: req.userInfo})
     } catch (error) {
         next(error)
     }
