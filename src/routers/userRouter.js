@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAUser, insertUser, updateUser } from '../modules/user/userModule.js';
+import { getAUser, getAdminPasswordById, insertUser, updateUser } from '../modules/user/userModule.js';
 import { comparePassword, hashPassword } from '../utils/bcrypt.js';
 import { newAdminValidation, resetPasswordValidation } from '../middlewares/joiValidation.js';
 import { responder } from '../middlewares/response.js';
@@ -179,6 +179,7 @@ router.post("/request-otp", async(req, res, next) => {
     }
 })
 
+// password reset
 router.patch("/", resetPasswordValidation, async(req, res, next) => {
     try {
         // check if user exist
@@ -221,5 +222,43 @@ router.patch("/", resetPasswordValidation, async(req, res, next) => {
 })
 
 //password update
+router.patch("/password", adminAuth, async(req, res, next)=> {
+    try {
+        //get user info
+        const user = req.userInfo
+        const {oldPassword, newPassword} = req.body
+
+        // get password from db by user id
+        const {password} = await getAdminPasswordById(user._id)
+
+        // match the old pass with db pass
+        const isMatched = comparePassword(oldPassword, password) 
+        // encrypt new pass
+        if(isMatched) {
+            const newHashPass = hashPassword(newPassword)
+            //update user table with new pass
+            const updatedUser = await updateUser({_id: user._id}, {password: newHashPass})
+            if(updatedUser?._id){
+                passwordUpdateNotification({
+                    fName: user.fName,
+                    email: updatedUser.email,
+                })
+                return responder.SUCCESS({
+                    res,
+                    message: "Your Password has been updated"
+                })
+            }
+        }
+        
+       
+        //send email notification
+        responder.ERROR({
+            res,
+            message: "Unable to update the password"
+        })
+    } catch (error) {
+        next(error)
+    }
+})
 
 export default router

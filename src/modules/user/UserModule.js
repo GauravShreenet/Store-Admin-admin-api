@@ -12,3 +12,7 @@ export const updateUser = (filter, update) => {
 export const getAUser = (filter) => {   //filter should be object
     return UserSchema.findOne(filter);
 }
+
+export const getAdminPasswordById = _id => {
+   return UserSchema.findById(_id, {password: 1})
+}
