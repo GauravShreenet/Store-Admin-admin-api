@@ -15,3 +15,10 @@ Content-Type: application/json
 GET {{userApi}}
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJpYXQiOjE3MDUyODA2ODIsImV4cCI6MTcwNTI4MTU4Mn0.yS4Q1hV2Bvx9VC9g8PnAJb0V75gDgwZ-eMdDwJYTAiU
 
+###request otp
+POST {{userApi}}/request-otp
+Content-Type: application/json
+
+{
+    "email": "a@a.com"
+}

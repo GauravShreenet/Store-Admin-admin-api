@@ -5,7 +5,7 @@ import { updateUser } from '../modules/user/userModule.js';
 //create accessJWT
 export const createAccessJWT = async(email) => {
     const accessJWT = jwt.sign({email}, process.env.ACCESSJWT_SECRET, {
-        expiresIn: "15m"
+        expiresIn: "1m"
     })
 
     //store accessJWT in session table

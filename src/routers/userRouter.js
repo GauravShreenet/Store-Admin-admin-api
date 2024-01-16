@@ -1,13 +1,14 @@
 import express from 'express';
 import { getAUser, insertUser, updateUser } from '../modules/user/userModule.js';
 import { comparePassword, hashPassword } from '../utils/bcrypt.js';
-import { newAdminValidation } from '../middlewares/joiValidation.js';
+import { newAdminValidation, resetPasswordValidation } from '../middlewares/joiValidation.js';
 import { responder } from '../middlewares/response.js';
 import { v4 as uuidv4 } from 'uuid';
 import { createNewSession, deleteSession } from '../modules/session/SessionSchema.js';
-import { sendEmailVerificaitonLinkEmail, sendEmailVerifiedNotifaction } from '../utils/nodemailer.js';
+import { passwordUpdateNotification, sendEmailVerificaitonLinkEmail, sendEmailVerifiedNotifaction, sendOtpEmail } from '../utils/nodemailer.js';
 import { getJwts } from '../utils/jwt.js';
-import { adminAuth } from '../middlewares/authMiddleWare.js';
+import { adminAuth, refreshAuth } from '../middlewares/authMiddleWare.js';
+import { otpGenerator } from '../utils/randomGenerator.js';
 
 let router = express.Router();
 
@@ -114,5 +115,111 @@ router.get("/", adminAuth, (req, res, next)=>{
         next(error)
     }
 })
+
+router.get("/get-accessjwt", refreshAuth)
+
+// logout
+router.post("/logout", async(req, res, next)=> {
+    try {
+        const { accessJWT, _id } = req.body;
+        accessJWT && (await deleteSession({
+            token: accessJWT,
+        }))
+
+        await updateUser({_id}, {refreshJWT: "" })
+
+        responder.SUCCESS({
+            res,
+            message: "User logged out successfully"
+        })
+    } catch (error) {
+        next(error)
+    }
+})
+
+//otp request
+router.post("/request-otp", async(req, res, next) => {
+    try {
+        // check if user exist
+        const { email } = req.body
+        if(email.includes("@")){
+            const user = await getAUser({email})
+
+            if(user._id){
+                const otp = otpGenerator()
+                console.log(otp)
+                const otpSession = await createNewSession({
+                    token: otp,
+                    associate: email
+                })
+                if(otpSession?._id){
+                    sendOtpEmail({
+                        fName: user.fName,
+                        email,
+                        otp
+                    })
+                }
+            }
+        }
+        // create new otp
+
+        // store otp and store it in session table
+
+        // sen email to the user
+
+        // response user
+
+        responder.SUCCESS({
+            res,
+            message: "If your email is found in the system, we will send otp to your email please check your Junk/Spam folder too",
+        })
+
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.patch("/", resetPasswordValidation, async(req, res, next) => {
+    try {
+        // check if user exist
+        const { email, otp, password } = req.body
+        
+        const session = await deleteSession({
+            token: otp,
+            associate: email
+        })
+
+        if (session?._id) {
+            // check what is the expire time
+            const hashPass = hashPassword(password)
+
+            const user = await updateUser({email}, {password: hashPass})
+
+            if(user?._id){
+                passwordUpdateNotification({
+                    fName: user.fName,
+                    email,
+                })
+                
+                return responder.SUCCESS({
+                    res,
+                    message: "Your password has been updated, you may login now",
+                })
+            }
+        }
+
+
+
+        responder.ERROR({
+            res,
+            message: "Invalid token, unable to rest your password, try again later",
+        })
+
+    } catch (error) {
+        next(error)
+    }
+})
+
+//password update
 
 export default router

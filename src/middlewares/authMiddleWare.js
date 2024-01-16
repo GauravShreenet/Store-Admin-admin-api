@@ -1,6 +1,6 @@
 import { getSession } from "../modules/session/SessionSchema.js"
 import { getAUser } from "../modules/user/userModule.js"
-import { verifyAccessJWT } from "../utils/jwt.js"
+import { createAccessJWT, verifyAccessJWT, verifyRefreshJWT } from "../utils/jwt.js"
 import { responder } from "./response.js"
 
 export const adminAuth = async(req, res, next) => {
@@ -32,6 +32,48 @@ export const adminAuth = async(req, res, next) => {
             errorCode: 401,
         })
     } catch (error) {
+        if(error.message.includes("jwt expired")){
+            return responder.ERROR({
+               res,
+               errorCode: 403,
+               message: "Jwt expired"
+           })
+       }
+        next(error)
+    }
+}
+
+export const refreshAuth = async(req, res, next) => {
+    
+    try {
+        const { authorization } = req.headers //refreshJWT
+        
+        const decoded = await verifyRefreshJWT(authorization)
+
+        if(decoded?.email) {
+            const user = await getAUser({
+                email: decoded.email,
+                refreshJWT: authorization,
+            })
+            
+            if(user?._id && user?.status === 'active') {
+                const accessJWT = await createAccessJWT(decoded.email)
+                console.log(accessJWT)
+                return responder.SUCCESS({
+                    res,
+                    message: "Here is the jwt",
+                    accessJWT,
+                })
+            }
+        }
+
+        responder.ERROR({
+            res,
+            errorCode: 401,
+            message: "Unauthorized"
+        })
+    } catch (error) {
+        
         next(error)
     }
 }

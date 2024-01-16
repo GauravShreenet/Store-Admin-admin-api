@@ -81,3 +81,55 @@ export const sendEmailVerifiedNotifaction = ({ email, fName }) => {
       emailSender(body)
 }
 
+export const sendOtpEmail = ({ email, fName, otp }) => {
+    const body = 
+    {
+        from: `"Fashon 👻" <${process.env.SMTP_USER}>`, // sender address
+        to: email, // list of receivers
+        subject: "Your OTP for password reset", // Subject line
+        text: `Hello ${fName}, here is your OTP ${otp} \n\n Regards, Fashon`, // plain text body
+        html: `<p>Hello ${fName}</p>
+        <br /><br />
+        
+        <p>Here is the OTP you requested</p>
+        <p style="font-size: 3rem; color: red;">${otp}</p>
+        
+        <br /><br /><br />
+        ------------------
+        <p>
+            Regards,
+            <br />
+            Fashon
+            <br />
+            www.fashon.com
+        </p>`, // html body
+      }
+
+      emailSender(body)
+}
+
+export const passwordUpdateNotification = ({ email, fName }) => {
+    const body = 
+    {
+        from: `"Fashon 👻" <${process.env.SMTP_USER}>`, // sender address
+        to: email, // list of receivers
+        subject: "Your Password has been Updated", // Subject line
+        text: `Hello ${fName}, Your password has been updated. If this wasnt you please contact us or change the password asasp \n\n Regards, Fashon`, // plain text body
+        html: `<p>Hello ${fName}</p>
+        <br /><br />
+        
+        <p>Your password has been updated. If this wasnt you please contact us or change the password asasp</p>
+        
+        <br /><br /><br />
+        ------------------
+        <p>
+            Regards,
+            <br />
+            Fashon
+            <br />
+            www.fashon.com
+        </p>`, // html body
+      }
+
+      emailSender(body)
+}
