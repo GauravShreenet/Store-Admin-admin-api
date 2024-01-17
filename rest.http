@@ -26,24 +26,24 @@ Content-Type: application/json
 
 ### C
 POST {{categoryApi}}
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJpYXQiOjE3MDUzNzg1MzAsImV4cCI6MTcwNTM3ODU5MH0.hRFrPSXOUWNqAeqQn6nQ0wohk6jD9UG6ehecFRbDEeY
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJpYXQiOjE3MDU0NjgxNjcsImV4cCI6MTcwNTQ2OTA2N30.CJ_ufMwUyDkJmuW_PdPWa-9B2yjuLcZTkZAO0BRbrCo
 Content-Type: application/json
 
 {
-    "title": "Women Shoes"
+    "title": "Jewlery"
 }
 
 ###R
 GET {{categoryApi}}
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJpYXQiOjE3MDUzNzc0MTIsImV4cCI6MTcwNTM3NzQ3Mn0.DHQBpJimT5FXfmH_yVZZqxZk1pp793mgDFiMmuJx05g
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJpYXQiOjE3MDU0NjgxNjcsImV4cCI6MTcwNTQ2OTA2N30.CJ_ufMwUyDkJmuW_PdPWa-9B2yjuLcZTkZAO0BRbrCo
 
 ###U
 PUT {{categoryApi}}
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJpYXQiOjE3MDUzNzg3MjAsImV4cCI6MTcwNTM3OTYyMH0.jga1Ye1G8GfC32qBJfALBU3w5MDpbulj7fDAzpYTwQs
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJpYXQiOjE3MDU0NjgxNjcsImV4cCI6MTcwNTQ2OTA2N30.CJ_ufMwUyDkJmuW_PdPWa-9B2yjuLcZTkZAO0BRbrCo
 
 {
-    "_id": "65a602fb1fa06d6b536487ff",
+    "_id": "65a76125a1de34ff5ea9d184",
     "title": "Women Shoes",
     "status": "active"
 }

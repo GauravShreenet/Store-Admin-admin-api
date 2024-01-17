@@ -49,7 +49,8 @@ router.get("/", async(req, res, next)=> {
 
         responder.SUCCESS({
             res,
-            message: "ToDO get"
+            message: "Here are the categories",
+            categories,
         })
     } catch (error) {
         next(error)
