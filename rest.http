@@ -1,5 +1,6 @@
 @rootUrl = http://localhost:8000/api/v1
 @userApi = {{rootUrl}}/users
+@categoryApi = {{rootUrl}}/categories
 
 # ======== user API
 ###login user
@@ -8,7 +9,7 @@ Content-Type: application/json
 
 {
     "email": "b@b.com",
-    "password": "11QQqq"
+    "password": "aA1234"
 }
 
 ###get user profile
@@ -22,3 +23,35 @@ Content-Type: application/json
 {
     "email": "a@a.com"
 }
+
+### C
+POST {{categoryApi}}
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJpYXQiOjE3MDUzNzg1MzAsImV4cCI6MTcwNTM3ODU5MH0.hRFrPSXOUWNqAeqQn6nQ0wohk6jD9UG6ehecFRbDEeY
+Content-Type: application/json
+
+{
+    "title": "Women Shoes"
+}
+
+###R
+GET {{categoryApi}}
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJpYXQiOjE3MDUzNzc0MTIsImV4cCI6MTcwNTM3NzQ3Mn0.DHQBpJimT5FXfmH_yVZZqxZk1pp793mgDFiMmuJx05g
+
+###U
+PUT {{categoryApi}}
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJpYXQiOjE3MDUzNzg3MjAsImV4cCI6MTcwNTM3OTYyMH0.jga1Ye1G8GfC32qBJfALBU3w5MDpbulj7fDAzpYTwQs
+
+{
+    "_id": "65a602fb1fa06d6b536487ff",
+    "title": "Women Shoes",
+    "status": "active"
+}
+
+###D
+DELETE {{categoryApi}}/65a602fb1fa06d6b536487ff
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJpYXQiOjE3MDUzNzkxMDUsImV4cCI6MTcwNTM4MDAwNX0.QJ5o8V_hWDH62YyiAXsuex86ec9CVgmEyls90VI7UcA
+
+
+

@@ -14,8 +14,12 @@ app.use(express.json())
 app.use(morgan("tiny"));
 
 import userRouter from './src/routers/userRouter.js';
+import categoryRouter from './src/routers/categoryRouter.js'
 import { connectDb } from './src/config/dbConfig.js';
+import { adminAuth } from './src/middlewares/authMiddleWare.js';
+
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/categories", adminAuth, categoryRouter);
 
 app.get("/", (req, res)=>{
     res.json({
