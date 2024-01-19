@@ -1,7 +1,7 @@
 import express from 'express';
 import { responder } from '../middlewares/response.js';
 import slugify from 'slugify';
-import { deleteACategory, getCategories, insertCategory, updateCategory } from '../modules/category/categoryModel.js';
+import { deleteACategory, getACategory, getCategories, insertCategory, updateCategory } from '../modules/category/categoryModel.js';
 
 const router = express.Router();
 
@@ -42,10 +42,12 @@ router.post("/", async(req, res, next)=> {
 })
 
 //get category
-router.get("/", async(req, res, next)=> {
+router.get("/:_id?", async(req, res, next)=> {
     try {
-
-        const categories = await getCategories();
+        const {_id} = req.params;
+        const categories = _id
+        ? await getACategory({_id})
+        : await getCategories();
 
         responder.SUCCESS({
             res,
@@ -60,11 +62,15 @@ router.get("/", async(req, res, next)=> {
 //update category
 router.put("/", async(req, res, next)=> {
     try {
-        const {_id, title, status} = req.body
-        if(_id && title && status) {
+        const {_id, status, title} = req.body
+        if(_id && status && title ) {
             const cat = await updateCategory({_id}, {
-                title,
                 status,
+                title,
+                slug: slugify(title, {
+                    lower: true,
+                    trim: true,
+                })
             });
             if(cat?._id){
                 return responder.SUCCESS({

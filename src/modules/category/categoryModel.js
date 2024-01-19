@@ -12,7 +12,7 @@ export const updateCategory = (filter, update) => {
 export const getACategory = (filter) => {   //filter should be object
     return CategorySchema.findOne(filter);
 }
-export const getCategories = () => {   //filter should be object
+export const getCategories = () => { 
     return CategorySchema.find();
 }
 
