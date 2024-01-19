@@ -24,6 +24,19 @@ Content-Type: application/json
     "email": "a@a.com"
 }
 
+###Update user profile
+PATCH {{userApi}}/user-profile
+Authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJpYXQiOjE3MDU2NDEzMTksImV4cCI6MTcwNTY0MjIxOX0.UllvZTihG3fB7wEIWInIttytuktICNqPsP21ks43WcM
+Content-Type: application/json
+
+{
+    "_id": "65a47133ebc597c33989c325",
+    "fName": "Gaurav",
+    "lName": "Shreenet",
+    "phone": "0451352524",
+    "address": "32 Brittain Crescent, Hillsdale NSW"
+}
+
 ### C
 POST {{categoryApi}}
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJpYXQiOjE3MDU0NjgxNjcsImV4cCI6MTcwNTQ2OTA2N30.CJ_ufMwUyDkJmuW_PdPWa-9B2yjuLcZTkZAO0BRbrCo

@@ -261,4 +261,29 @@ router.patch("/password", adminAuth, async(req, res, next)=> {
     }
 })
 
+router.patch("/user-profile", adminAuth, async(req, res, next) => {
+    try {
+        const {_id, fName, lName, phone, address} = req.body
+        const updateProfile = await updateUser({_id}, {
+            fName,
+            lName,
+            phone,
+            address,
+        })
+        if(updateProfile?._id){
+            return responder.SUCCESS({
+                res,
+                message: "Your info has been updated!",
+                updateProfile,
+            })
+        }
+        responder.ERROR({
+            res,
+            message: "Invalid Data"
+        })
+    } catch (error) {
+        next(error)
+    }
+})
+
 export default router
