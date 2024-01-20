@@ -82,7 +82,7 @@ router.post("/sign-in", async (req, res, next) => {
 
             const user = await getAUser({ email })
             // 2. verify password match
-            if(user?.status === 'inactive'){
+            if (user?.status === 'inactive') {
                 return responder.ERROR({
                     res,
                     message: "Your account has not been verified. Please verify your account and login again."
@@ -108,9 +108,9 @@ router.post("/sign-in", async (req, res, next) => {
     }
 })
 
-router.get("/", adminAuth, (req, res, next)=>{
+router.get("/", adminAuth, (req, res, next) => {
     try {
-        responder.SUCCESS({res, message: "Here is the user data", user: req.userInfo})
+        responder.SUCCESS({ res, message: "Here is the user data", user: req.userInfo })
     } catch (error) {
         next(error)
     }
@@ -119,14 +119,14 @@ router.get("/", adminAuth, (req, res, next)=>{
 router.get("/get-accessjwt", refreshAuth)
 
 // logout
-router.post("/logout", async(req, res, next)=> {
+router.post("/logout", async (req, res, next) => {
     try {
         const { accessJWT, _id } = req.body;
         accessJWT && (await deleteSession({
             token: accessJWT,
         }))
 
-        await updateUser({_id}, {refreshJWT: "" })
+        await updateUser({ _id }, { refreshJWT: "" })
 
         responder.SUCCESS({
             res,
@@ -138,21 +138,21 @@ router.post("/logout", async(req, res, next)=> {
 })
 
 //otp request
-router.post("/request-otp", async(req, res, next) => {
+router.post("/request-otp", async (req, res, next) => {
     try {
         // check if user exist
         const { email } = req.body
-        if(email.includes("@")){
-            const user = await getAUser({email})
+        if (email.includes("@")) {
+            const user = await getAUser({ email })
 
-            if(user._id){
+            if (user._id) {
                 const otp = otpGenerator()
                 console.log(otp)
                 const otpSession = await createNewSession({
                     token: otp,
                     associate: email
                 })
-                if(otpSession?._id){
+                if (otpSession?._id) {
                     sendOtpEmail({
                         fName: user.fName,
                         email,
@@ -180,11 +180,11 @@ router.post("/request-otp", async(req, res, next) => {
 })
 
 // password reset
-router.patch("/", resetPasswordValidation, async(req, res, next) => {
+router.patch("/", resetPasswordValidation, async (req, res, next) => {
     try {
         // check if user exist
         const { email, otp, password } = req.body
-        
+
         const session = await deleteSession({
             token: otp,
             associate: email
@@ -194,14 +194,14 @@ router.patch("/", resetPasswordValidation, async(req, res, next) => {
             // check what is the expire time
             const hashPass = hashPassword(password)
 
-            const user = await updateUser({email}, {password: hashPass})
+            const user = await updateUser({ email }, { password: hashPass })
 
-            if(user?._id){
+            if (user?._id) {
                 passwordUpdateNotification({
                     fName: user.fName,
                     email,
                 })
-                
+
                 return responder.SUCCESS({
                     res,
                     message: "Your password has been updated, you may login now",
@@ -222,23 +222,23 @@ router.patch("/", resetPasswordValidation, async(req, res, next) => {
 })
 
 //password update
-router.patch("/password", adminAuth, async(req, res, next)=> {
+router.patch("/password", adminAuth, async (req, res, next) => {
     try {
         //get user info
         const user = req.userInfo
-        const {oldPassword, newPassword} = req.body
+        const { oldPassword, newPassword } = req.body
 
         // get password from db by user id
-        const {password} = await getAdminPasswordById(user._id)
+        const { password } = await getAdminPasswordById(user._id)
 
         // match the old pass with db pass
-        const isMatched = comparePassword(oldPassword, password) 
+        const isMatched = comparePassword(oldPassword, password)
         // encrypt new pass
-        if(isMatched) {
+        if (isMatched) {
             const newHashPass = hashPassword(newPassword)
             //update user table with new pass
-            const updatedUser = await updateUser({_id: user._id}, {password: newHashPass})
-            if(updatedUser?._id){
+            const updatedUser = await updateUser({ _id: user._id }, { password: newHashPass })
+            if (updatedUser?._id) {
                 passwordUpdateNotification({
                     fName: user.fName,
                     email: updatedUser.email,
@@ -249,8 +249,8 @@ router.patch("/password", adminAuth, async(req, res, next)=> {
                 })
             }
         }
-        
-       
+
+
         //send email notification
         responder.ERROR({
             res,
@@ -261,21 +261,31 @@ router.patch("/password", adminAuth, async(req, res, next)=> {
     }
 })
 
-router.patch("/user-profile", adminAuth, async(req, res, next) => {
+router.patch("/user-profile", adminAuth, async (req, res, next) => {
     try {
-        const {_id, fName, lName, phone, address} = req.body
-        const updateProfile = await updateUser({_id}, {
-            fName,
-            lName,
-            phone,
-            address,
-        })
-        if(updateProfile?._id){
-            return responder.SUCCESS({
-                res,
-                message: "Your info has been updated!",
-                updateProfile,
+        const user = req.userInfo
+
+        const { userPassword } = req.body;
+
+        const { password } = await getAdminPasswordById(user._id)
+
+        const isMatched = comparePassword(userPassword, password)
+
+        if (isMatched) {
+            const { _id, fName, lName, phone, address } = req.body
+            const updateProfile = await updateUser({ _id }, {
+                fName,
+                lName,
+                phone,
+                address,
             })
+            if (updateProfile?._id) {
+                return responder.SUCCESS({
+                    res,
+                    message: "Your info has been updated!",
+                    updateProfile,
+                })
+            }
         }
         responder.ERROR({
             res,

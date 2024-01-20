@@ -67,10 +67,6 @@ router.put("/", async(req, res, next)=> {
             const cat = await updateCategory({_id}, {
                 status,
                 title,
-                slug: slugify(title, {
-                    lower: true,
-                    trim: true,
-                })
             });
             if(cat?._id){
                 return responder.SUCCESS({
