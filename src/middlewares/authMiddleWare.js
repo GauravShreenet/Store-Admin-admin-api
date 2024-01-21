@@ -36,7 +36,7 @@ export const adminAuth = async(req, res, next) => {
             return responder.ERROR({
                res,
                errorCode: 403,
-               message: "Jwt expired"
+               message: "jwt expired"
            })
        }
         next(error)
