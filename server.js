@@ -2,16 +2,21 @@ import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import "dotenv/config";
+import path from 'path';
 
 const app = express();
 
 const PORT = process.env.PORT || 8000
+const _dirname = path.resolve()
 
 connectDb();
 //middleware
 app.use(cors())
 app.use(express.json())
 app.use(morgan("tiny"));
+
+//server static files
+app.use(express.static(path.join(_dirname, "/public")));
 
 import userRouter from './src/routers/userRouter.js';
 import categoryRouter from './src/routers/categoryRouter.js'

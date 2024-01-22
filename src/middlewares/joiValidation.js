@@ -4,7 +4,7 @@ import { responder } from './response.js';
 //constants
 const SHORTSTR = Joi.string().max(100).allow(null, "");
 const SHORTSTRREQ = SHORTSTR.required()
-const NUM = Joi.number();
+const NUM = Joi.number().allow(null, "");;
 const NUMREQ = NUM.required()
 const LONGSTR = Joi.string().max(500).allow(null, "");
 const LONGSTRREQ = LONGSTR.required()
@@ -61,6 +61,28 @@ export const newProductValidation = (req, res, next) => {
         description: LONGSTRREQ,
         salesStartDate: SHORTSTR,
         salesEndDate: SHORTSTR,
+    })
+
+    joiValidator({schema, req, res, next})
+}
+
+export const updateProductValidation = (req, res, next) => {
+    req.body.salesPrice = 
+    req.body.salesPrice === "null" ? 0 : req.body.salesPrice
+    const schema = Joi.object({
+        status: SHORTSTRREQ,
+        _id: SHORTSTRREQ,
+        name: SHORTSTRREQ,
+        parentCatId: SHORTSTRREQ,
+        price: NUMREQ,
+        qty: NUMREQ,
+        salesPrice: NUM,
+        description: LONGSTRREQ,
+        salesStartDate: SHORTSTR,
+        salesEndDate: SHORTSTR,
+        images: LONGSTRREQ,
+        thumbnail: LONGSTRREQ,
+        imgToDelete: LONGSTRREQ,
     })
 
     joiValidator({schema, req, res, next})
