@@ -1,6 +1,7 @@
 @rootUrl = http://localhost:8000/api/v1
 @userApi = {{rootUrl}}/users
 @categoryApi = {{rootUrl}}/categories
+@productApi = {{rootUrl}}/products
 
 # ======== user API
 ###login user
@@ -66,5 +67,22 @@ DELETE {{categoryApi}}/65a602fb1fa06d6b536487ff
 Content-Type: application/json
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJpYXQiOjE3MDUzNzkxMDUsImV4cCI6MTcwNTM4MDAwNX0.QJ5o8V_hWDH62YyiAXsuex86ec9CVgmEyls90VI7UcA
 
+# ==================Product
 
+###CRUD
+POST {{productApi}}
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJpYXQiOjE3MDU4ODAzMDMsImV4cCI6MTcwNTg4MTIwM30.O_BHz2QlRZgUvxJL8jOTxoO0VUQPlvQfAad25reEK2k
+Content-Type: application/json
+
+{
+    "name": "Nike AirMax",
+    "parentCatId": "65a76125a1de34ff5ea9d184",
+    "sku": "N-AM10",
+    "price": 220,
+    "qty": 120,
+    "salesPrice": 0,
+    "description": "Air Max shoes are identified by their midsoles incorporating flexible urethane pouches filled with pressurized gas, visible from the exterior of the shoe and intended to provide cushioning to the underfoot. Air Max was conceptualized by Tinker Hatfield, who initially worked for Nike designing stores. Nike, Inc.",
+    "salesStartDate": "SHORTSTR",
+    "salesEndDate": "SHORTSTR"
+}
 

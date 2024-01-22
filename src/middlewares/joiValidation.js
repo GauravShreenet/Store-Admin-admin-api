@@ -4,6 +4,8 @@ import { responder } from './response.js';
 //constants
 const SHORTSTR = Joi.string().max(100).allow(null, "");
 const SHORTSTRREQ = SHORTSTR.required()
+const NUM = Joi.number();
+const NUMREQ = NUM.required()
 const LONGSTR = Joi.string().max(500).allow(null, "");
 const LONGSTRREQ = LONGSTR.required()
 const EMAIL = Joi.string().email({minDomainSegments: 2}).max(100).allow(null, "");
@@ -41,6 +43,24 @@ export const resetPasswordValidation = (req, res, next) => {
         otp: SHORTSTRREQ,
         email: EMAILREQ,
         password: SHORTSTRREQ,
+    })
+
+    joiValidator({schema, req, res, next})
+}
+
+// ============== product
+export const newProductValidation = (req, res, next) => {
+    const schema = Joi.object({
+        // status: SHORTSTRREQ,
+        name: SHORTSTRREQ,
+        parentCatId: SHORTSTRREQ,
+        sku: SHORTSTRREQ,
+        price: NUMREQ,
+        qty: NUMREQ,
+        salesPrice: NUM,
+        description: LONGSTRREQ,
+        salesStartDate: SHORTSTR,
+        salesEndDate: SHORTSTR,
     })
 
     joiValidator({schema, req, res, next})

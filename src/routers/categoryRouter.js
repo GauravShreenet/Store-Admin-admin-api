@@ -17,7 +17,6 @@ router.post("/", async(req, res, next)=> {
                 trim: true,
             })
 
-            
         }
 
         const cat = await insertCategory(obj);
