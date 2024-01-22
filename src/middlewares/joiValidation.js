@@ -68,9 +68,9 @@ export const newProductValidation = (req, res, next) => {
 
 export const updateProductValidation = (req, res, next) => {
     req.body.salesPrice = 
-    req.body.salesPrice === "null" ? 0 : req.body.salesPrice
+    req.body.salesPrice === "null" ? null : req.body.salesPrice
     const schema = Joi.object({
-        status: SHORTSTRREQ,
+        status: SHORTSTR,
         _id: SHORTSTRREQ,
         name: SHORTSTRREQ,
         parentCatId: SHORTSTRREQ,
@@ -82,7 +82,7 @@ export const updateProductValidation = (req, res, next) => {
         salesEndDate: SHORTSTR,
         images: LONGSTRREQ,
         thumbnail: LONGSTRREQ,
-        imgToDelete: LONGSTRREQ,
+        imgToDelete: LONGSTR,
     })
 
     joiValidator({schema, req, res, next})

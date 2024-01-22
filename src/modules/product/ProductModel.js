@@ -9,7 +9,7 @@ export const updateProduct = (filter, update) => {
 }
 
 export const updateProductById = ({_id, ...rest}) => {
-    return ProductSchema.findOneAndUpdate(_id, rest);
+    return ProductSchema.findByIdAndUpdate(_id, rest);
 }
 
 //get product by filter

@@ -69,43 +69,26 @@ router.post("/", upload.array("images", 5), newProductValidation, async(req, res
     }
 })
 
-//get category
-router.get("/:_id?", async(req, res, next)=> {
-    try {
-        const {_id} = req.params;
-        const products = _id
-        ? await getAProduct({_id})
-        : await getProducts();
-
-        responder.SUCCESS({
-            res,
-            message: "Here are the Products",
-            products,
-        })
-    } catch (error) {
-        next(error)
-    }
-})
-
 router.put("/", upload.array("newImages", 5), updateProductValidation, async(req, res, next)=> {
     try {
         //handle deleting image
         const { imgToDelete } = req.body;
-        //remove photo from folder
-        if(imgToDelete.length) {
-            req.body.images = req.body?.images.split(",").filter((url)=>!imgToDelete.includes(url))
+        // remove photo from folder
+        req.body.images = req.body?.images.split(",")
+        if (imgToDelete?.length) {
+            req.body.images = req.body?.images.filter(
+            (url) => !imgToDelete.includes(url)
+            //
+          );
         }
-
         // get the file path where it was upload and store in the db
 
-        if(req.files?.length){
-           const newImgs = req.files.map((item)=>item.path.slice(6))
-           req.body.images = [...req.body.images, ...newImgs];
-        }
-
-         //insert into db
-
-         const product = await updateProductById(req.body)
+        if (req.files?.length) {
+            const newImgs = req.files.map((item) => item.path.slice(6));
+            req.body.images = [...req.body.images, ...newImgs];
+          }
+    
+          const product = await updateProductById(req.body);
 
          product?._id ?
         responder.SUCCESS({
@@ -125,6 +108,26 @@ router.put("/", upload.array("newImages", 5), updateProductValidation, async(req
         next(error)
     }
 })
+
+//get category
+router.get("/:_id?", async(req, res, next)=> {
+    try {
+        const {_id} = req.params;
+        const products = _id
+        ? await getAProduct({_id})
+        : await getProducts();
+
+        responder.SUCCESS({
+            res,
+            message: "Here are the Products",
+            products,
+        })
+    } catch (error) {
+        next(error)
+    }
+})
+
+
 
 //delete
 // router.delete("/:_id", async(req, res, next)=> {
