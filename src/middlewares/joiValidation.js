@@ -10,6 +10,7 @@ const LONGSTR = Joi.string().max(500).allow(null, "");
 const LONGSTRREQ = LONGSTR.required()
 const EMAIL = Joi.string().email({minDomainSegments: 2}).max(100).allow(null, "");
 const EMAILREQ = EMAIL.required()
+const IMAGEURL = Joi.string().max(10000).allow(null, "");
 
 
 const joiValidator = ({schema, req, res, next}) => {
@@ -80,8 +81,8 @@ export const updateProductValidation = (req, res, next) => {
         description: LONGSTRREQ,
         salesStartDate: SHORTSTR,
         salesEndDate: SHORTSTR,
-        images: LONGSTRREQ,
-        thumbnail: LONGSTRREQ,
+        images: IMAGEURL,
+        thumbnail: LONGSTR,
         imgToDelete: LONGSTR,
     })
 

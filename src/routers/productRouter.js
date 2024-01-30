@@ -4,19 +4,13 @@ import slugify from 'slugify';
 import { newProductValidation, updateProductValidation } from '../middlewares/joiValidation.js';
 import { getAProduct, getProducts, insertProduct, updateProductById } from '../modules/product/ProductModel.js';
 import multer from 'multer';
+import { handleOnUpload } from '../utils/cloudinary.js'
 // import { deleteACategory, getACategory, getCategories, insertCategory, updateCategory } from '../modules/category/categoryModel.js';
 
 const router = express.Router();
 
-const imgFolderPth = "public/img/product"
 //multer config
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-
-        let error = null;
-        
-        cb(error, imgFolderPth)
-    },
+const storage = multer.memoryStorage({
     filename: function (req, file, cb) {
         const fullFileName = Date.now() + '-' + file.originalname;
         let error = ""
@@ -35,10 +29,25 @@ const upload = multer({ storage })
 router.post("/", upload.array("images", 5), newProductValidation, async(req, res, next)=> {
     try {
         //get the file path where it was uploaded and store in the db
-        if(req.files?.length){
-           const newImgs = req.files.map((item)=>item.path.slice(6))
-           req.body.images = newImgs;
-           req.body.thumbnail = newImgs[0];
+        // if(req.files?.length){
+        //    const newImgs = req.files.map((item)=>item.path.slice(6))
+        //    req.body.images = newImgs;
+        //    req.body.thumbnail = newImgs[0];
+        // }
+
+        if (req.files?.length) {
+            const newImgs = req.files.map((file) => {
+                const b64 = Buffer.from(file.buffer).toString("base64");
+                const dataUrl = "data:" + file.mimetype + ";base64," + b64;
+                return dataUrl;
+            })
+            
+            const cldRes = await Promise.all(newImgs.map(handleOnUpload));
+            
+            const imgURL = cldRes.map((item)=>item.url)
+            console.log(imgURL)
+            req.body.images = imgURL;
+            req.body.thumbnail = imgURL[0];
         }
 
         req.body.slug = slugify(req.body.name, { 
@@ -84,8 +93,20 @@ router.put("/", upload.array("newImages", 5), updateProductValidation, async(req
         // get the file path where it was upload and store in the db
 
         if (req.files?.length) {
-            const newImgs = req.files.map((item) => item.path.slice(6));
-            req.body.images = [...req.body.images, ...newImgs];
+            // const newImgs = req.files.map((item) => item.path.slice(6));
+            // req.body.images = [...req.body.images, ...newImgs];
+
+            const newImgs = req.files.map((file) => {
+                const b64 = Buffer.from(file.buffer).toString("base64");
+                const dataUrl = "data:" + file.mimetype + ";base64," + b64;
+                return dataUrl;
+            })
+            
+            const cldRes = await Promise.all(newImgs.map(handleOnUpload));
+            
+            const imgURL = cldRes.map((item)=>item.url)
+            console.log(imgURL)
+            req.body.images = [...req.body.images, ...imgURL];
           }
     
           const product = await updateProductById(req.body);

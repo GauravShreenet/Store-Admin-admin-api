@@ -6,7 +6,7 @@ import path from 'path';
 
 const app = express();
 
-const PORT = process.env.PORT || 8000
+const PORT = process.env.PORT || 8001
 const _dirname = path.resolve()
 
 connectDb();
